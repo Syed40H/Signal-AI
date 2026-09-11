@@ -22,7 +22,7 @@ def _optional(name: str) -> str | None:
 
 
 def load_settings() -> Settings:
-    # Real environment variables win over .env, so docker-compose/Render overrides apply.
+    # Real environment variables win over .env, so values set on Render take precedence.
     load_dotenv()
 
     database_url = _optional("DATABASE_URL")

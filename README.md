@@ -2,29 +2,31 @@
 
 An autonomous pipeline that monitors AI news sources (RSS feeds, company blogs, YouTube channels), summarizes new content with the OpenAI API, and emails a digest on a schedule.
 
-## Quick start (Docker)
+## Setup
 
-Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+The app runs from a local Python virtual environment and connects to a hosted Postgres database on Render. There is no local database: the same Render instance serves local development and production.
 
-```bash
-cp .env.example .env
-docker compose up --build
-```
+1. In the Render dashboard, create a Postgres database and copy its **External Database URL**.
+2. Set up the project:
 
-This starts Postgres, applies the schema, and runs one pipeline pass. The `app` container exits when the run finishes; `db` keeps running.
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate          # Windows (macOS/Linux: source .venv/bin/activate)
+   pip install -r requirements.txt
+   cp .env.example .env            # then paste the URL into DATABASE_URL
+   ```
 
-## Local development (Python on your machine, Postgres in Docker)
+3. Run one pipeline pass:
 
-```bash
-docker compose up -d db
-python -m venv .venv
-.venv\Scripts\activate          # Windows (macOS/Linux: source .venv/bin/activate)
-pip install -r requirements.txt
-cp .env.example .env
-python scripts/run_pipeline.py
-```
+   ```bash
+   python scripts/run_pipeline.py
+   ```
 
-A successful run logs the Postgres version and a row count for each table.
+   A successful run logs the Postgres version and a row count for each table.
+
+## Deployment
+
+Planned for phase 8: the cloud service that runs the daily job builds the app from a Dockerfile, so Docker never needs to be installed locally.
 
 ## Layout
 
@@ -52,6 +54,5 @@ The schema is applied on every run (`CREATE TABLE IF NOT EXISTS`), so a fresh da
 - [ ] 5. Summarization pipeline
 - [ ] 6. Digest assembly
 - [ ] 7. Email delivery
-- [ ] 8. Dockerize fully
-- [ ] 9. Deploy to Render
-- [ ] 10. Subscriber list
+- [ ] 8. Deploy (cloud build from a Dockerfile)
+- [ ] 9. Subscriber list
