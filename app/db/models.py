@@ -1,4 +1,4 @@
-"""Row shapes for the tables in schema.sql. Keep the two in sync."""
+"""Row shapes for the tables in schema.sql (keep the two in sync), plus RawItem."""
 
 from dataclasses import dataclass
 from datetime import datetime
@@ -20,6 +20,7 @@ class Item:
     source_id: int
     external_id: str
     title: str | None
+    url: str | None
     raw_content: str | None
     markdown_content: str | None
     summary: str | None
@@ -42,3 +43,14 @@ class Subscriber:
     email: str
     active: bool
     subscribed_at: datetime
+
+
+@dataclass
+class RawItem:
+    """What every fetcher returns, whatever kind of source it came from."""
+
+    external_id: str
+    title: str | None
+    url: str | None
+    raw_content: str | None
+    published_at: datetime | None

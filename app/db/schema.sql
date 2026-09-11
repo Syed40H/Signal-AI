@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS items (
     source_id         INTEGER NOT NULL REFERENCES sources(id),
     external_id       TEXT NOT NULL,                -- video id / post url / guid, for dedup
     title             TEXT,
+    url               TEXT,                         -- link to the original post/video
     raw_content       TEXT,                         -- original transcript/post body
     markdown_content  TEXT,                         -- converted markdown
     summary           TEXT,                         -- LLM-generated summary
@@ -25,6 +26,9 @@ CREATE TABLE IF NOT EXISTS items (
     sent              BOOLEAN NOT NULL DEFAULT FALSE,  -- included in a digest yet?
     UNIQUE (source_id, external_id)
 );
+
+-- items.url was added after the first tables were created
+ALTER TABLE items ADD COLUMN IF NOT EXISTS url TEXT;
 
 -- One row per digest email actually sent
 CREATE TABLE IF NOT EXISTS digests (

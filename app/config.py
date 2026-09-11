@@ -7,6 +7,21 @@ from dotenv import load_dotenv
 
 
 @dataclass(frozen=True)
+class SourceConfig:
+    type: str  # 'rss', 'blog', 'youtube'
+    name: str
+    url: str
+
+
+# What the pipeline monitors. Removing one here stops it being checked.
+SOURCES = [
+    SourceConfig("rss", "The Verge AI", "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),
+    SourceConfig("rss", "MIT Technology Review AI", "https://www.technologyreview.com/topic/artificial-intelligence/feed"),
+    SourceConfig("rss", "Simon Willison", "https://simonwillison.net/atom/everything/"),
+]
+
+
+@dataclass(frozen=True)
 class Settings:
     database_url: str
     openai_api_key: str | None
