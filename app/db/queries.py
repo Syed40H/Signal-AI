@@ -26,9 +26,9 @@ def sync_sources(conn: psycopg.Connection, configs: list[SourceConfig]) -> list[
     return [Source(**row) for row in rows]
 
 
-def insert_items(conn: psycopg.Connection, source_id: int, items: list[RawItem]) -> int:
-    """Store items for a source, skipping any already saved. Returns how many were new."""
-    new = 0
+def insert_items(conn: psycopg.Connection, source_id: int, items: list[RawItem]) -> list[tuple[int, RawItem]]:
+    """Store items for a source, skipping any already saved. Returns the new ones with their ids."""
+    new = []
     for item in items:
         row = conn.execute(
             """
@@ -40,5 +40,9 @@ def insert_items(conn: psycopg.Connection, source_id: int, items: list[RawItem])
             (source_id, item.external_id, item.title, item.url, item.raw_content, item.published_at),
         ).fetchone()
         if row is not None:
-            new += 1
+            new.append((row["id"], item))
     return new
+
+
+def update_item_content(conn: psycopg.Connection, item_id: int, raw_content: str) -> None:
+    conn.execute("UPDATE items SET raw_content = %s WHERE id = %s", (raw_content, item_id))

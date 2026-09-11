@@ -15,9 +15,21 @@ class SourceConfig:
 
 # What the pipeline monitors. Removing one here stops it being checked.
 SOURCES = [
+    # News sites
     SourceConfig("rss", "The Verge AI", "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"),
     SourceConfig("rss", "MIT Technology Review AI", "https://www.technologyreview.com/topic/artificial-intelligence/feed"),
     SourceConfig("rss", "Simon Willison", "https://simonwillison.net/atom/everything/"),
+    # Company blogs (OpenAI has a feed, Anthropic doesn't so its news page gets scraped)
+    SourceConfig("rss", "OpenAI News", "https://openai.com/news/rss.xml"),
+    SourceConfig("blog", "Anthropic News", "https://www.anthropic.com/news"),
+    # YouTube channels (url is the channel id)
+    SourceConfig("youtube", "Dubibubi", "UC4SgqYQmdTCKXUoer2U-lcg"),
+    SourceConfig("youtube", "Tina Huang", "UC2UXDak6o7rBm23k3Vv5dww"),
+    SourceConfig("youtube", "Sajjaad Khader", "UC7zZ2-Q_oxbUaoMVL0z51wg"),
+    SourceConfig("youtube", "Duke Pan", "UCxE6qpCeMGgyrae2fV-Lhhg"),
+    SourceConfig("youtube", "Starter Story", "UChhw6DlKKTQ9mYSpTfXUYqA"),
+    SourceConfig("youtube", "Pat Simmons", "UCY8ZKVxXj0FgIvSfeiSDclg"),
+    SourceConfig("youtube", "David Ondrej", "UCPGrgwfbkjTIgPoOh2q1BAg"),
 ]
 
 
