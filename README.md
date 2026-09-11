@@ -1,14 +1,14 @@
 # Signal AI
 
-Keeping up with AI news is a lot, so I built something to do it for me. Signal AI checks a bunch of AI sources (RSS feeds, company blogs and YouTube channels), summarizes anything new with the OpenAI API, and emails me a daily digest.
+Keeping up with AI news is a lot, so I built something to do it for me. Signal AI checks a bunch of AI sources (RSS feeds, company blogs and YouTube channels), summarizes anything new with Google's Gemini API, and emails me a daily digest.
 
-It's still a work in progress. Right now it connects to the database and sets up the tables, and I'm adding the scraping, summaries and emails next.
+It's still a work in progress. Right now it collects new posts and videos from all the sources, and I'm working on the summaries and the email next.
 
 ## How it works
 
 1. Check each source for new posts or videos
 2. Pull the content (article text or video transcript)
-3. Summarize each one with OpenAI
+3. Summarize each one with Gemini
 4. Put the summaries together into one email
 5. Send it and mark those items as sent so nothing shows up twice
 
@@ -16,7 +16,8 @@ It's still a work in progress. Right now it connects to the database and sets up
 
 - Python
 - PostgreSQL (hosted on Render)
-- OpenAI API
+- Gemini API (free tier)
+- feedparser, BeautifulSoup and youtube-transcript-api for collecting content
 - Render for deployment
 
 ## Running it locally
@@ -47,7 +48,7 @@ app/
   config.py      loads settings from .env
   db/            database schema and connection
   ingestion/     RSS, blog and YouTube fetching
-  processing/    summarizing with OpenAI
+  processing/    summarizing with Gemini
   digest/        building the email
   delivery/      sending the email
 scripts/

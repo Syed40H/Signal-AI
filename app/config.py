@@ -36,8 +36,7 @@ SOURCES = [
 @dataclass(frozen=True)
 class Settings:
     database_url: str
-    openai_api_key: str | None
-    youtube_api_key: str | None
+    gemini_api_key: str | None
     email_api_key: str | None
     email_from: str | None
     digest_recipient: str | None
@@ -58,8 +57,7 @@ def load_settings() -> Settings:
 
     return Settings(
         database_url=database_url,
-        openai_api_key=_optional("OPENAI_API_KEY"),
-        youtube_api_key=_optional("YOUTUBE_API_KEY"),
+        gemini_api_key=_optional("GEMINI_API_KEY"),
         email_api_key=_optional("EMAIL_API_KEY"),
         email_from=_optional("EMAIL_FROM"),
         digest_recipient=_optional("DIGEST_RECIPIENT"),

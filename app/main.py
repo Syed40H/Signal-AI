@@ -7,6 +7,7 @@ from app.config import SOURCES, load_settings
 from app.db.connection import connect, init_schema
 from app.db.queries import sync_sources
 from app.ingestion.ingest import ingest_all
+from app.processing.summarize import summarize_pending
 
 log = logging.getLogger("signal_ai")
 
@@ -25,11 +26,16 @@ def run_pipeline() -> None:
         new = ingest_all(conn, sources)
         log.info("Ingested %d new items from %d sources", new, len(sources))
 
+        if settings.gemini_api_key:
+            summarize_pending(conn, settings.gemini_api_key)
+        else:
+            log.warning("GEMINI_API_KEY isn't set, skipping summaries")
+
         for table in TABLES:
             count = conn.execute(f"SELECT count(*) AS n FROM {table}").fetchone()["n"]
             log.info("  %-12s %d rows", table, count)
 
-    # Later steps plug in here: summarize -> build digest -> deliver.
+    # Later steps plug in here: build digest -> deliver.
 
 
 def main() -> int:

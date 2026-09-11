@@ -46,3 +46,24 @@ def insert_items(conn: psycopg.Connection, source_id: int, items: list[RawItem])
 
 def update_item_content(conn: psycopg.Connection, item_id: int, raw_content: str) -> None:
     conn.execute("UPDATE items SET raw_content = %s WHERE id = %s", (raw_content, item_id))
+
+
+def pending_summaries(conn: psycopg.Connection, limit: int) -> list[dict]:
+    """Unsent items that still need a summary, oldest first."""
+    return conn.execute(
+        """
+        SELECT i.id, i.title, i.raw_content, s.type AS source_type, s.name AS source_name
+        FROM items i JOIN sources s ON s.id = i.source_id
+        WHERE i.summary IS NULL AND i.raw_content IS NOT NULL AND NOT i.sent
+        ORDER BY i.published_at NULLS LAST, i.id
+        LIMIT %s
+        """,
+        (limit,),
+    ).fetchall()
+
+
+def save_summary(conn: psycopg.Connection, item_id: int, markdown: str, summary: str) -> None:
+    conn.execute(
+        "UPDATE items SET markdown_content = %s, summary = %s WHERE id = %s",
+        (markdown, summary, item_id),
+    )
