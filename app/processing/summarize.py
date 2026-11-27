@@ -5,7 +5,7 @@ import time
 
 import psycopg
 from google import genai
-from google.genai import errors
+from google.genai import errors, types
 
 from app.db.queries import pending_summaries, save_summary
 from app.processing.markdown import to_markdown
@@ -13,6 +13,10 @@ from app.processing.markdown import to_markdown
 log = logging.getLogger(__name__)
 
 MODEL = "gemini-3.5-flash-lite"
+# Plain text in, plain text out. Turning off function calling also stops the SDK warning on every call.
+CONFIG = types.GenerateContentConfig(
+    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+)
 
 # The free tier has per-minute and per-day limits, so go easy and cap each run.
 MAX_PER_RUN = 30
@@ -45,7 +49,7 @@ def summarize_pending(conn: psycopg.Connection, api_key: str) -> int:
             content=markdown,
         )
         try:
-            response = client.models.generate_content(model=MODEL, contents=prompt)
+            response = client.models.generate_content(model=MODEL, contents=prompt, config=CONFIG)
         except errors.ClientError as exc:
             if exc.code == 429:
                 log.warning("Hit the Gemini free tier limit, the rest will be summarized next run")

@@ -67,3 +67,21 @@ def save_summary(conn: psycopg.Connection, item_id: int, markdown: str, summary:
         "UPDATE items SET markdown_content = %s, summary = %s WHERE id = %s",
         (markdown, summary, item_id),
     )
+
+
+def unsent_summaries(conn: psycopg.Connection) -> list[dict]:
+    """Summarized items that haven't been in a digest yet, grouped by source."""
+    return conn.execute(
+        """
+        SELECT i.id, i.title, i.url, i.summary, s.name AS source_name
+        FROM items i JOIN sources s ON s.id = i.source_id
+        WHERE i.summary IS NOT NULL AND NOT i.sent
+        ORDER BY s.type, s.name, i.published_at DESC NULLS LAST
+        """
+    ).fetchall()
+
+
+def record_digest(conn: psycopg.Connection, item_ids: list[int], content: str) -> None:
+    """Save a sent digest and mark its items as sent so they never go out twice."""
+    conn.execute("INSERT INTO digests (item_count, content) VALUES (%s, %s)", (len(item_ids), content))
+    conn.execute("UPDATE items SET sent = TRUE WHERE id = ANY(%s)", (item_ids,))

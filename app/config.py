@@ -37,8 +37,8 @@ SOURCES = [
 class Settings:
     database_url: str
     gemini_api_key: str | None
-    email_api_key: str | None
-    email_from: str | None
+    resend_api_key: str | None
+    email_from: str
     digest_recipient: str | None
 
 
@@ -58,7 +58,8 @@ def load_settings() -> Settings:
     return Settings(
         database_url=database_url,
         gemini_api_key=_optional("GEMINI_API_KEY"),
-        email_api_key=_optional("EMAIL_API_KEY"),
-        email_from=_optional("EMAIL_FROM"),
+        resend_api_key=_optional("RESEND_API_KEY"),
+        # Resend's testing sender works without owning a domain (it can only email your own address)
+        email_from=_optional("EMAIL_FROM") or "Signal AI <onboarding@resend.dev>",
         digest_recipient=_optional("DIGEST_RECIPIENT"),
     )

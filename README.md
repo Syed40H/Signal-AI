@@ -2,7 +2,7 @@
 
 Keeping up with AI news is a lot, so I built something to do it for me. Signal AI checks a bunch of AI sources (RSS feeds, company blogs and YouTube channels), summarizes anything new with Google's Gemini API, and emails me a daily digest.
 
-It's still a work in progress. Right now it collects new posts and videos from all the sources, and I'm working on the summaries and the email next.
+It's still a work in progress. It now collects new posts and videos, summarizes them and emails me the digest. Next up is getting it to run by itself every day.
 
 ## How it works
 
@@ -18,6 +18,7 @@ It's still a work in progress. Right now it collects new posts and videos from a
 - PostgreSQL (hosted on Render)
 - Gemini API (free tier)
 - feedparser, BeautifulSoup and youtube-transcript-api for collecting content
+- Resend for sending the email
 - Render for deployment
 
 ## Running it locally
@@ -32,7 +33,7 @@ pip install -r requirements.txt
 
 (On Mac/Linux, activate with `source .venv/bin/activate` instead.)
 
-Copy `.env.example` to `.env` and add your database URL, plus the API keys once those parts are in. Then run:
+Copy `.env.example` to `.env` and fill in your database URL, a free Gemini API key, a free Resend API key and the email the digest should go to. Then run:
 
 ```bash
 python scripts/run_pipeline.py
